@@ -15,6 +15,10 @@ Projekt używa czterech usług:
 
 Można potwierdzić ich istnienie za pomocą ```docker compose config --services```
 
+Linki do obrazów:
+- [frontend](https://hub.docker.com/repository/docker/wkwidzinski/projekt-frontend)
+- [backend](https://hub.docker.com/repository/docker/wkwidzinski/projekt-backend)
+
 
 API zawiera 3 endpointy: GET "/items" do pobrania danych, POST "/items" do dodania danych i "/health" do sprawdzenia stanu api, redisa i postgresa. Do potwierdzenia ich działania można wywołać odpowiednie polecenia curl
 

@@ -44,7 +44,7 @@ services:
 
 
   backend:
-    image: projekt-backend
+    image: wkwidzinski/projekt-backend:v1
     environment:
       - REDIS_HOST=${REDIS_HOST}
       - DB_HOST=${DB_HOST}
@@ -75,7 +75,7 @@ services:
 
 
   frontend:
-    image: projekt-frontend
+    image: wkwidzinski/projekt-frontend:v1
     ports:
       - "80:80"
     networks:
@@ -112,18 +112,5 @@ secrets:
 
 networks:
   frontend-net:
-    ipam:
-      config:
-        - subnet: 172.24.1.0/24
-          gateway: 172.24.1.1
   backend-net:
-    ipam:
-      config:
-        - subnet: 172.24.2.0/24
-          gateway: 172.24.2.1
-
   db-net:
-    ipam:
-      config:
-        - subnet: 172.24.3.0/24
-          gateway: 172.24.3.1
