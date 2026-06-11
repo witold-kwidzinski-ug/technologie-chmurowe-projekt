@@ -50,6 +50,7 @@ services:
       - DB_HOST=${DB_HOST}
       - DB_DATABASE=${DB_DATABASE}
       - DB_PORT=${DB_PORT}
+    stop_grace_period: 10s
     secrets:
       - db_user
       - db_password
