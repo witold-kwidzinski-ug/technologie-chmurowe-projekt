@@ -1,0 +1,129 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=${DB_DATABASE}
+      - POSTGRES_USER_FILE=/run/secrets/db_user
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
+    secrets:
+      - db_user
+      - db_password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - "${PWD}/init.sql:/docker-entrypoint-initdb.d/init.sql"
+    networks:
+      - backend-net
+      - db-net
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $(cat /run/secrets/db_user)"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+  
+  redis:
+    image: redis:alpine
+    volumes:
+      - redis-data:/data
+    networks:
+      - backend-net
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+
+  backend:
+    image: projekt-backend
+    environment:
+      - REDIS_HOST=${REDIS_HOST}
+      - DB_HOST=${DB_HOST}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_PORT=${DB_PORT}
+    secrets:
+      - db_user
+      - db_password
+    networks:
+      - frontend-net
+      - backend-net
+      - db-net
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+
+  frontend:
+    image: projekt-frontend
+    ports:
+      - "80:80"
+    networks:
+      - frontend-net
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    depends_on:
+      backend:
+        condition: service_started
+
+
+
+
+
+volumes:
+  pgdata:
+  redis-data:
+
+
+secrets:
+  db_user:
+    file: "./secrets/db_user.txt"
+  db_password:
+    file: "./secrets/db_password.txt"
+
+
+networks:
+  frontend-net:
+    ipam:
+      config:
+        - subnet: 172.24.1.0/24
+          gateway: 172.24.1.1
+  backend-net:
+    ipam:
+      config:
+        - subnet: 172.24.2.0/24
+          gateway: 172.24.2.1
+
+  db-net:
+    ipam:
+      config:
+        - subnet: 172.24.3.0/24
+          gateway: 172.24.3.1

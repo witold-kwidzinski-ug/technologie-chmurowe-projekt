@@ -1,0 +1,37 @@
+body {
+  margin: 0;
+}
+
+#site-header {
+  margin: 0;
+  margin-bottom: 15px;
+  height: 10vh;
+  background-color: cornflowerblue;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+
+}
+
+#listgrid {
+  justify-self: center;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  background-color:rgb(209, 190, 143) ;
+}
+
+.item {
+  margin: 10px;
+  width: 8vw;
+  height: 12vw;
+  background-color: gray;
+  border-top: 15px solid black;
+  box-shadow: 5px 5px 5px rgb(147, 134, 102);
+}
+
+.item p {
+  padding: 10px;
+  margin: 10px;
+  justify-self: center;
+}

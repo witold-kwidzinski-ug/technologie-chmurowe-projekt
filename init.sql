@@ -1,0 +1,3 @@
+CREATE TABLE games (id SERIAL PRIMARY KEY, name TEXT NOT NULL);
+
+INSERT INTO games (name) VALUES ('test');
